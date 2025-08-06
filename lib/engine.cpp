@@ -176,13 +176,10 @@ auto getOffsetAtI(const State& ctx, const int idx) -> int {
 
 auto applyState(State& state) -> void {
 	state.stepsI = stepsFromKnobValue(state.steps);
-
 	state.offsets =
 		genFractalOffsets(state.stepsI, state.alpha.load() * 0.3f + 0.5f, 10);
-	// state.minOffset = state.noise.minOffset;
-	// state.vals = state.noise.offsets;
-	state.alphaChanged = false;
-	state.stepsChanged = false;
+	state.eventOffsetsUpdated.store(true);
+	state.queuedOffsetRecalc.store(false);
 }
 
 auto stepsFromKnobValue(const float value) -> int {

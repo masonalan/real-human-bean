@@ -11,4 +11,7 @@ struct Quad {
 	glm::vec2 size{};
 };
 
-auto containsPoint(const Quad& quad, glm::vec2 point) -> bool;
+auto quadContainsPoint(const Quad& quad, glm::vec2 point) -> bool;
+auto quadFromPsQuad(const glm::vec2 psPos, const glm::vec2 psSize) -> Quad;
+auto posFromPsPos(const glm::vec2 psPos, const glm::vec2 psSize) -> glm::vec2;
+auto sizeFromPsSize(const glm::vec2 psSize) -> glm::vec2;

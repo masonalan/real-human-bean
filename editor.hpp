@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "lib/controls.hpp"
 #include "lib/engine.hpp"
 #include "lib/graphics.hpp"
+#include "lib/ui.hpp"
 #include "processor.hpp"
 
 #include <juce_audio_processors/juce_audio_processors.h>
@@ -15,7 +15,7 @@
 
 class OpenGLComponent;
 
-class Editor : public juce::AudioProcessorEditor {
+class Editor final : public juce::AudioProcessorEditor {
    public:
 	explicit Editor(Processor& processor);
 	~Editor() override;

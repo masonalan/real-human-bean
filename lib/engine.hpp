@@ -36,12 +36,11 @@ struct State {
 	std::array<float, 2> _lastSample{};
 
 	std::array<std::array<float, delayBufferSize>, 2> delayBuffer{};
-	// std::vector<float> vals{};
-	// float minOffset;
 
-	bool alphaChanged = false;
-	int stepsI;
-	bool stepsChanged = false;
+	std::atomic<int> stepsI;
+	std::atomic<bool> queuedSeedRecalc = false;
+	std::atomic<bool> queuedOffsetRecalc = false;
+	std::atomic<bool> eventOffsetsUpdated = false;
 
 	FractalNoiseResult offsets;
 

@@ -5,6 +5,15 @@ find_package(glm CONFIG REQUIRED)
 
 add_executable(real_human_bean_test main.cpp ../lib/engine.cpp ../lib/noise.cpp
         ../lib/quad.cpp
-        ../lib/quad.hpp)
+        ../lib/quad.hpp
+        ../lib/widget/knob.cpp
+        ../lib/widget/knob.hpp
+        ../lib/widget/button.cpp
+        ../lib/widget/button.hpp
+        ../lib/mouse.cpp
+        ../lib/mouse.hpp
+        ../lib/event.hpp
+        ../lib/config.hpp
+)
 
 target_link_libraries(real_human_bean_test PRIVATE glm::glm)

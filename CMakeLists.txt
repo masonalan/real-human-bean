@@ -33,10 +33,11 @@ target_sources(real_human_bean
         lib/texture.cpp
         lib/noise.cpp
         lib/graphics.cpp
-        lib/controls.cpp
+        lib/ui.cpp
         lib/engine.cpp
         lib/serialize.cpp
-        lib/quad.cpp)
+        lib/quad.cpp
+        lib/widget/knob.cpp)
 
 
 target_compile_definitions(real_human_bean

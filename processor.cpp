@@ -5,9 +5,9 @@
 #include "processor.hpp"
 #include "editor.hpp"
 
-#include "lib/controls.hpp"
 #include "lib/engine.hpp"
 #include "lib/serialize.hpp"
+#include "lib/ui.hpp"
 
 #include <assert.h>
 
@@ -102,6 +102,16 @@ auto Processor::isBusesLayoutSupported(const BusesLayout& layouts) const
 auto Processor::processBlock(juce::AudioBuffer<float>& buffer,
 							 juce::MidiBuffer& midiMessages) -> void {
 	juce::ignoreUnused(midiMessages);
+
+	if (ctx.queuedSeedRecalc.load()) {
+		recalcRandVals();
+		ctx.queuedSeedRecalc.store(false);
+		ctx.queuedOffsetRecalc.store(true);
+	}
+
+	if (ctx.queuedOffsetRecalc.load()) {
+		applyState(ctx);
+	}
 
 	const auto totalNumInputChannels = getTotalNumInputChannels();
 	const auto totalNumOutputChannels = getTotalNumOutputChannels();

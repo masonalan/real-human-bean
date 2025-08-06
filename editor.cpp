@@ -4,9 +4,10 @@
 
 #include "editor.hpp"
 
-#include "lib/controls.hpp"
 #include "lib/engine.hpp"
+#include "lib/event.hpp"
 #include "lib/graphics.hpp"
+#include "lib/ui.hpp"
 
 #include <glm/ext/matrix_transform.hpp>
 
@@ -60,7 +61,7 @@ auto OpenGLComponent::initialise() -> void {
 auto OpenGLComponent::shutdown() -> void {}
 
 auto OpenGLComponent::render() -> void {
-	ui.size = {getWidth(), getHeight()};
+	ui.windowSize = {getWidth(), getHeight()};
 
 	const auto mousePosRel = getMouseXYRelative();
 	ui.mouse.pos = glm::vec2{mousePosRel.x, mousePosRel.y} -
@@ -71,11 +72,11 @@ auto OpenGLComponent::render() -> void {
 	if (const auto isPressed = isMouseButtonDown();
 		isPressed && !ui.mouse.isPressed) {
 		ui.mouse.isPressed = true;
-		ui.mouse.events |= MousePressEvent;
+		ui.mouse.events |= EventMousePressed;
 		ui.mouse.mouseDownPos = ui.mouse.pos;
 	} else if (!isPressed && ui.mouse.isPressed) {
 		ui.mouse.isPressed = false;
-		ui.mouse.events |= MouseReleaseEvent;
+		ui.mouse.events |= EventMouseReleased;
 	}
 
 	updateUi(ui, state, graphics);
