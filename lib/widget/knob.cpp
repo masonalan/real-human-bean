@@ -4,10 +4,14 @@
 
 #include "knob.hpp"
 
-#include "../ui.hpp"
 #include "../event.hpp"
+#include "../graphics.hpp"
+#include "../ui.hpp"
 
-#include <algorithm>
+#include <juce_opengl/juce_opengl.h>
+#include <glm/ext/matrix_transform.hpp>
+
+using namespace ::juce::gl;
 
 auto knobUpdate(Knob& knob, const Mouse& mouse) -> void {
 	if (!mouse.isPressed) {
@@ -33,6 +37,32 @@ auto knobUpdate(Knob& knob, const Mouse& mouse) -> void {
 	}
 }
 
+auto knobRender(const Knob& knob, const GraphicsContext& graphics) -> void {
+	auto quad = knob.quad;
+	quad.size *= 2.f;
+	auto model = quadToModel(quad);
+
+	glUseProgram(graphics.circleShader.id);
+	setUniform(graphics.circleShader.id, "model", model);
+	setUniform(graphics.circleShader.id, "val", knob.value);
+
+	glBindVertexArray(graphics.quadVertexArray);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	glUseProgram(graphics.shader.id);
+
+	model = knobApplyRotationToModel(quadToModel(knob.quad), knob.rotation);
+
+	setUniform(graphics.shader.id, "model", model);
+	setUniform(graphics.shader.id, "hovered", knob.hovered);
+	setUniform(graphics.shader.id, "rotating", knob.rotating);
+	setUniform(graphics.shader.id, "isImage", true);
+
+	glBindTexture(GL_TEXTURE_2D, graphics.knobTexId);
+	glBindVertexArray(graphics.quadVertexArray);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 auto knobInitWithValue(Knob& knob, const float value) -> void {
 	knob.value = value;
 	knob.rotation = knobValueToRotation(value);
@@ -45,4 +75,9 @@ auto knobValueToRotation(const float value) -> float {
 auto knobRotationToValue(const float rotation) -> float {
 	return std::abs((rotation - MinKnobRotation) /
 					(MinKnobRotation - MaxKnobRotation));
+}
+
+auto knobApplyRotationToModel(const glm::mat4& model, const float rotation)
+	-> glm::mat4 {
+	return glm::rotate(model, rotation, glm::vec3{0, 0, 1});
 }

@@ -17,4 +17,7 @@ struct Texture {
 	static auto fromArray(const float* array, int size) -> unsigned int;
 };
 
+auto textureFromResource(const std::string& resource, const TextureLoadOptions& opt) -> unsigned int;
+auto textureFromBuffer(const void* data, int size, const TextureLoadOptions& opt) -> unsigned int;
+
 auto setTextureData(unsigned int id, const float* data, int size) -> void;

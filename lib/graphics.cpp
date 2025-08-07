@@ -4,21 +4,14 @@
 
 #include "graphics.hpp"
 
+#include "texture.hpp"
+
+#include <BinaryData.h>
+#include <juce_core/juce_core.h>
 #include <juce_opengl/juce_opengl.h>
 #include <glm/gtc/type_ptr.hpp>
 
 #include <fstream>
-
-#include "texture.hpp"
-
-// auto quadVertexBuffer = 0u;
-// auto quadVertexArray = 0u;
-// auto shader = Shader{};
-// auto noiseShader = Shader{};
-// auto graphShader = Shader{};
-// auto circleShader = Shader{};
-// auto notesFbo = 0u;
-// auto notesTex = 0u;
 
 using namespace juce::gl;
 
@@ -52,8 +45,12 @@ auto loadShader(Shader& shader) -> void {
 		throw e;
 	}
 
+	auto size = 0;
+	const auto buffer =
+		BinaryData::getNamedResource(shader.fragmentPath.c_str(), size);
+
 	const auto vCodeCStr = vCode.c_str();
-	const auto fCodeCStr = fCode.c_str();
+	const auto fCodeCStr = buffer;
 
 	auto success = int{};
 	auto&& log = (char[512]){};
@@ -135,29 +132,25 @@ auto setupGraphics(GraphicsContext& context) -> void {
 	checkError();
 	context.shader.vertexPath =
 		"/Users/jamespickering/tyos/real human bean/shader.vert";
-	context.shader.fragmentPath =
-		"/Users/jamespickering/tyos/real human bean/shader.frag";
+	context.shader.fragmentPath = "shader_frag";
 	loadShader(context.shader);
 	checkError();
 
 	context.noiseShader.vertexPath =
 		"/Users/jamespickering/tyos/real human bean/shader.vert";
-	context.noiseShader.fragmentPath =
-		"/Users/jamespickering/tyos/real human bean/noise-shader.frag";
+	context.noiseShader.fragmentPath = "noiseshader_frag";
 	loadShader(context.noiseShader);
 	checkError();
 
 	context.graphShader.vertexPath =
 		"/Users/jamespickering/tyos/real human bean/shader.vert";
-	context.graphShader.fragmentPath =
-		"/Users/jamespickering/tyos/real human bean/graph-shader.frag";
+	context.graphShader.fragmentPath = "graphshader_frag";
 	loadShader(context.graphShader);
 	checkError();
 
 	context.circleShader.vertexPath =
 		"/Users/jamespickering/tyos/real human bean/shader.vert";
-	context.circleShader.fragmentPath =
-		"/Users/jamespickering/tyos/real human bean/circle-shader.frag";
+	context.circleShader.fragmentPath = "circleshader_frag";
 	loadShader(context.circleShader);
 	checkError();
 
@@ -211,22 +204,16 @@ auto setupGraphics(GraphicsContext& context) -> void {
 	opt.hasAlpha = true;
 	opt.flip = true;
 
-	context.bgTextureId = Texture::fromPng(
-		"/Users/jamespickering/tyos/real human bean/bg3.png", opt);
-	context.knobTexId = Texture::fromPng(
-		"/Users/jamespickering/tyos/real human bean/knob2.png", opt);
-	context.normalTexId = Texture::fromPng(
-		"/Users/jamespickering/tyos/real human bean/normal.png", opt);
-	context.shiftTexId = Texture::fromPng(
-		"/Users/jamespickering/tyos/real human bean/shift.png", opt);
-	context.fig3TexId = Texture::fromPng(
-		"/Users/jamespickering/tyos/real human bean/fig3.png", opt);
-	context.reseedButtonTex = Texture::fromPng(
-		"/Users/jamespickering/tyos/real human bean/btn-play.png", opt);
-	context.reseedButtonHoveredTex = Texture::fromPng(
-		"/Users/jamespickering/tyos/real human bean/btn-play-hovered.png", opt);
-	context.reseedButtonPressedTex = Texture::fromPng(
-		"/Users/jamespickering/tyos/real human bean/btn-play-pressed.png", opt);
+	context.bgTextureId = textureFromResource("bg3_png", opt);
+	context.knobTexId = textureFromResource("knob2_png", opt);
+	context.normalTexId = textureFromResource("normal_png", opt);
+	context.shiftTexId = textureFromResource("shift_png", opt);
+	context.labelFig3Tex = textureFromResource("fig3_png", opt);
+	context.reseedButtonTex = textureFromResource("btnplay_png", opt);
+	context.reseedButtonHoveredTex =
+		textureFromResource("btnplayhovered_png", opt);
+	context.reseedButtonPressedTex =
+		textureFromResource("btnplaypressed_png", opt);
 }
 
 auto setUniform(const unsigned int shaderId,

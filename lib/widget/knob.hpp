@@ -10,6 +10,7 @@
 constexpr auto MinKnobRotation = glm::radians(90.f);
 constexpr auto MaxKnobRotation = glm::radians(-180.f);
 
+struct GraphicsContext;
 struct Mouse;
 
 struct Knob {
@@ -22,6 +23,9 @@ struct Knob {
 };
 
 auto knobUpdate(Knob& knob, const Mouse& mouse) -> void;
+auto knobRender(const Knob& knob, const GraphicsContext& graphics) -> void;
 auto knobInitWithValue(Knob& knob, float value) -> void;
 auto knobValueToRotation(float value) -> float;
 auto knobRotationToValue(float rotation) -> float;
+auto knobApplyRotationToModel(const glm::mat4& model, float rotation)
+	-> glm::mat4;

@@ -10,6 +10,7 @@
 #include "graphics.hpp"
 #include "quad.hpp"
 #include "texture.hpp"
+#include "widget/button.hpp"
 
 #include <juce_opengl/juce_opengl.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -76,6 +77,8 @@ auto updateUi(Ui& ui, State& state, const GraphicsContext& graphics) -> void {
 	knobUpdate(ui.knobSteps, ui.mouse);
 	knobUpdate(ui.knobVariance, ui.mouse);
 	knobUpdate(ui.knobLookahead, ui.mouse);
+
+	buttonUpdate(ui.buttonReseed, ui.mouse);
 }
 
 auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
@@ -107,83 +110,18 @@ auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
 	glBindVertexArray(graphics.quadVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	auto createModelQuad = [](const Quad& knob) {
-		auto model = glm::mat4{1.f};
-		model = glm::translate(
-			model, glm::vec3{knob.pos / config::HalfWindowSize, 0.1f});
-		model = glm::scale(model,
-						   glm::vec3{knob.size / config::HalfWindowSize, 1.f});
-		return model;
-	};
+	knobRender(ui.knobAlpha, graphics);
+	knobRender(ui.knobSteps, graphics);
+	knobRender(ui.knobVariance, graphics);
+	knobRender(ui.knobLookahead, graphics);
 
-	auto createModel = [&createModelQuad](const Knob& knob) {
-		auto model = createModelQuad(knob.quad);
-		model = glm::rotate(model, knob.rotation, glm::vec3{0, 0, 1});
-		return model;
-	};
+	buttonRender(ui.buttonReseed, graphics);
 
-	auto renderKnob = [&createModel, createModelQuad,
-					   graphics](const Knob& knob) {
-		auto quad = knob.quad;
-		quad.size *= 2.f;
-		auto model = createModelQuad(quad);
+	auto labelFig3Quad = ui.diagramOffset;
+	labelFig3Quad.pos.y = ui.cells.back().pos.y - 35.f;
+	setUniform(graphics.shader.id, "model", quadToModel(labelFig3Quad));
 
-		glUseProgram(graphics.circleShader.id);
-		setUniform(graphics.circleShader.id, "model", model);
-		setUniform(graphics.circleShader.id, "val", knob.value);
-
-		glBindVertexArray(graphics.quadVertexArray);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		glUseProgram(graphics.shader.id);
-
-		model = createModel(knob);
-
-		setUniform(graphics.shader.id, "model", model);
-		setUniform(graphics.shader.id, "hovered", knob.hovered);
-		setUniform(graphics.shader.id, "rotating", knob.rotating);
-		setUniform(graphics.shader.id, "isImage", true);
-
-		glBindTexture(GL_TEXTURE_2D, graphics.knobTexId);
-		glBindVertexArray(graphics.quadVertexArray);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-	};
-
-	renderKnob(ui.knobAlpha);
-	renderKnob(ui.knobSteps);
-	renderKnob(ui.knobVariance);
-	renderKnob(ui.knobLookahead);
-
-	auto btnModel = createModelQuad(ui.buttonReseed.quad);
-	setUniform(graphics.shader.id, "model", btnModel);
-
-	if (quadContainsPoint(ui.buttonReseed.quad, ui.mouse.pos)) {
-		if (ui.mouse.isPressed) {
-			glBindTexture(GL_TEXTURE_2D, graphics.reseedButtonPressedTex);
-			if (!ui.buttonReseed.pressed) {
-				ui.buttonReseed.events |= EventMousePressed;
-				ui.buttonReseed.pressed = true;
-			}
-		} else {
-			if (ui.buttonReseed.pressed) {
-				ui.buttonReseed.events |= EventMouseReleased;
-				ui.buttonReseed.pressed = false;
-			}
-			glBindTexture(GL_TEXTURE_2D, graphics.reseedButtonHoveredTex);
-		}
-	} else {
-		glBindTexture(GL_TEXTURE_2D, graphics.reseedButtonTex);
-	}
-
-	glBindVertexArray(graphics.quadVertexArray);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	// TODO: figure out why this is here
-	auto fig3Quad = ui.diagramOffset;
-	fig3Quad.pos.y = ui.cells.back().pos.y - 35.f;
-	setUniform(graphics.shader.id, "model", createModelQuad(fig3Quad));
-
-	glBindTexture(GL_TEXTURE_2D, graphics.fig3TexId);
+	glBindTexture(GL_TEXTURE_2D, graphics.labelFig3Tex);
 	glBindVertexArray(graphics.quadVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -195,9 +133,8 @@ auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	auto i = 0;
-
 	for (auto& pair : ui.cells) {
-		auto model = createModelQuad(pair);
+		auto model = quadToModel(pair);
 		setUniform(graphics.shader.id, "model", model);
 
 		glBindTexture(GL_TEXTURE_2D, graphics.normalTexId);
@@ -207,25 +144,25 @@ auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
 		auto offsetQuad = pair;
 		offsetQuad.pos.x += getOffsetAt(state, i) / 100.f;
 
-		++i;
-
-		model = createModelQuad(offsetQuad);
+		model = quadToModel(offsetQuad);
 		setUniform(graphics.shader.id, "model", model);
 
 		glBindTexture(GL_TEXTURE_2D, graphics.shiftTexId);
 		glBindVertexArray(graphics.quadVertexArray);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		++i;
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBlendFunc(GL_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glViewport(0, 0, ui.windowSize.x * 2, ui.windowSize.y * 2);
 
-	auto quad = Quad{};
-	quad.pos = {0, 0};
-	quad.size = config::WindowSize;
+	auto quadDiagram = Quad{};
+	quadDiagram.pos = {0, 0};
+	quadDiagram.size = config::WindowSize;
 
-	auto model = createModelQuad(quad);
+	auto model = quadToModel(quadDiagram);
 	setUniform(graphics.shader.id, "model", model);
 	setUniform(graphics.shader.id, "enableSaturation", true);
 
@@ -237,25 +174,21 @@ auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
 
 	glUseProgram(graphics.graphShader.id);
 
-	model = createModelQuad(ui.graphPowerSpectrum);
+	model = quadToModel(ui.graphPowerSpectrum);
 	setUniform(graphics.graphShader.id, "model", model);
 	setUniform(graphics.graphShader.id, "powerTex", 1);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_1D, graphics.powerTexId);
-
 	glBindVertexArray(graphics.quadVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
-	model = createModelQuad(ui.graphOffset);
+	model = quadToModel(ui.graphOffset);
 	setUniform(graphics.graphShader.id, "model", model);
 	setUniform(graphics.graphShader.id, "powerTex", 1);
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_1D, graphics.offsetGraphTexId);
-
 	glBindVertexArray(graphics.quadVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	glUseProgram(graphics.shader.id);
 }

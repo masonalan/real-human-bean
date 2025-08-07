@@ -9,6 +9,23 @@ find_package(Stb REQUIRED)
 
 add_subdirectory(test)
 
+juce_add_binary_data(Resources
+        SOURCES
+        resources/image/bg3.png
+        resources/image/btn-play.png
+        resources/image/btn-play-hovered.png
+        resources/image/btn-play-pressed.png
+        resources/image/fig3.png
+        resources/image/knob2.png
+        resources/image/normal.png
+        resources/image/shift.png
+        resources/shader/shader.vert
+        resources/shader/shader.frag
+        resources/shader/circle-shader.frag
+        resources/shader/graph-shader.frag
+        resources/shader/noise-shader.frag
+)
+
 juce_add_plugin(${PROJECT_NAME}
         COMPANY_NAME tyos
         IS_SYNTH FALSE
@@ -24,20 +41,18 @@ juce_add_plugin(${PROJECT_NAME}
         PRODUCT_NAME "real human bean"
 )
 
-#source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${SOURCES})
-
 target_sources(real_human_bean
         PRIVATE
         editor.cpp
         processor.cpp
         lib/texture.cpp
-        lib/noise.cpp
         lib/graphics.cpp
         lib/ui.cpp
         lib/engine.cpp
         lib/serialize.cpp
         lib/quad.cpp
-        lib/widget/knob.cpp)
+        lib/widget/knob.cpp
+        lib/widget/button.cpp)
 
 
 target_compile_definitions(real_human_bean
@@ -62,6 +77,7 @@ target_link_libraries(real_human_bean PRIVATE
         juce::juce_events
         juce::juce_recommended_config_flags
         juce::juce_recommended_lto_flags
-        juce::juce_recommended_warning_flags)
+        juce::juce_recommended_warning_flags
+        Resources)
 target_link_libraries(real_human_bean PRIVATE glm::glm)
 target_include_directories(real_human_bean PRIVATE ${Stb_INCLUDE_DIR})

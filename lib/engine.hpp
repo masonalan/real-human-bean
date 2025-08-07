@@ -62,8 +62,6 @@ constexpr auto HalfWindowSize = WindowSize / 2.f;
 }  // namespace config
 
 auto genFractalOffsets(int n, float alpha, float std) -> FractalNoiseResult;
-
 auto getOffsetAt(const State& ctx, int idx) -> float;
 auto getOffsetAtI(const State& ctx, int idx) -> int;
-
 auto recalcRandVals() -> void;

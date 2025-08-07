@@ -7,12 +7,25 @@
 #include "config.hpp"
 #include "ui.hpp"
 
+#include <glm/ext/matrix_transform.hpp>
+
+#include "engine.hpp"
+
 auto quadContainsPoint(const Quad& quad, const glm::vec2 point) -> bool {
 	const auto halfExtents = quad.size / 2.f;
 	return point.x < quad.pos.x + halfExtents.x &&
 		   point.x > quad.pos.x - halfExtents.x &&
 		   point.y < quad.pos.y + halfExtents.y &&
 		   point.y > quad.pos.y - halfExtents.y;
+}
+
+auto quadToModel(const Quad& quad) -> glm::mat4 {
+	auto model = glm::mat4{1.f};
+	model = glm::translate(model,
+						   glm::vec3{quad.pos / config::HalfWindowSize, 0.1f});
+	model =
+		glm::scale(model, glm::vec3{quad.size / config::HalfWindowSize, 1.f});
+	return model;
 }
 
 auto quadFromPsQuad(const glm::vec2 psPos, const glm::vec2 psSize) -> Quad {
