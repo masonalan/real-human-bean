@@ -17,7 +17,7 @@ jobs:
       - name: Decode and install certificate
         run: |
           echo "$MAC_CERT_P12" | base64 --decode > cert.p12
-          security import cert.p12 -k ~/Library/Keychains/login.keychain-db -P "$MAC_CERT_PASSWORD" -T /usr/bin/codesign
+          security import cert.p12 -k /Users/runner/Library/Keychains/login.keychain-db -P "$MAC_CERT_PASSWORD" -T /usr/bin/codesign -A
 
       - name: Configure and build
         run: |
