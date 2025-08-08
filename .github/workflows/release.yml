@@ -8,6 +8,7 @@ on:
 jobs:
   macos-build-sign:
     runs-on: macos-latest
+    environment: stage
     steps:
       - uses: actions/checkout@v4
 
@@ -16,8 +17,8 @@ jobs:
 
       - name: Decode and install certificate
         run: |
-          echo "$MAC_CERT_P12" | base64 --decode > cert.p12
-          security import cert.p12 -k /Users/runner/Library/Keychains/login.keychain-db -P "$MAC_CERT_PASSWORD" -T /usr/bin/codesign -A
+          echo "${{ secrets.MAC_CERT_P12 }}" | base64 --decode > cert.p12
+          security import cert.p12 -k /Users/runner/Library/Keychains/login.keychain-db -P "${{ secrets.MAC_CERT_PASSWORD }}" -T /usr/bin/codesign -A
 
       - name: Configure and build
         run: |
@@ -33,9 +34,9 @@ jobs:
       - name: Notarize
         run: |
           xcrun notarytool submit build/path/to/YourPlugin.vst3 \
-            --apple-id "$MAC_APPLE_ID" \
-            --team-id "$MAC_TEAM_ID" \
-            --password "$MAC_APP_PASSWORD" \
+            --apple-id "${{ secrets.MAC_APPLE_ID }}" \
+            --team-id "${{ secrets.MAC_TEAM_ID }}" \
+            --password "${{ secrets.MAC_APP_PASSWORD }}" \
             --wait
 
       - name: Staple ticket
