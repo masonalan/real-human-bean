@@ -1,0 +1,49 @@
+name: Build and Sign VST3
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  macos-build-sign:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install CMake
+        run: brew install cmake
+
+      - name: Decode and install certificate
+        run: |
+          echo "$MAC_CERT_P12" | base64 --decode > cert.p12
+          security import cert.p12 -k ~/Library/Keychains/login.keychain-db -P "$MAC_CERT_PASSWORD" -T /usr/bin/codesign
+
+      - name: Configure and build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+
+      - name: Sign VST3
+        run: |
+          codesign --deep --force --options runtime \
+            --sign "Developer ID Application: James Pickering (G34JXTX2UG)" \
+            build/real_human_bean_artefacts/Release/VST3/real\ human\ bean.vst3
+
+      - name: Notarize
+        run: |
+          xcrun notarytool submit build/path/to/YourPlugin.vst3 \
+            --apple-id "$MAC_APPLE_ID" \
+            --team-id "$MAC_TEAM_ID" \
+            --password "$MAC_APP_PASSWORD" \
+            --wait
+
+      - name: Staple ticket
+        run: xcrun stapler staple build/real_human_bean_artefacts/Release/VST3/real\ human\ bean.vst3
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/real_human_bean_artefacts/Release/VST3/real\ human\ bean.vst3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

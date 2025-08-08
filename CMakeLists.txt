@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.11" CACHE STRING "Minimum OS X deployment version" FORCE)
+set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
 project(real_human_bean VERSION 0.0.1)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -81,3 +83,26 @@ target_link_libraries(real_human_bean PRIVATE
         Resources)
 target_link_libraries(real_human_bean PRIVATE glm::glm)
 target_include_directories(real_human_bean PRIVATE ${Stb_INCLUDE_DIR})
+
+set(CODESIGN_ID "Developer ID Application: James Pickering (TEAMID)")  # macOS
+set(NOTARIZE_APPLE_ID "you@example.com")                         # macOS
+set(NOTARIZE_TEAM_ID "TEAMID")                                   # macOS
+set(NOTARIZE_PASSWORD "app-specific-password")                   # macOS
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    if(APPLE)
+        add_custom_command(TARGET real_human_bean
+                POST_BUILD
+                COMMAND codesign --deep --force --options runtime
+                --sign "${CODESIGN_ID}"
+                "${VST3_PATH}"
+                COMMAND xcrun notarytool submit "${VST3_PATH}"
+                --apple-id "${NOTARIZE_APPLE_ID}"
+                --team-id "${NOTARIZE_TEAM_ID}"
+                --password "${NOTARIZE_PASSWORD}"
+                --wait
+                COMMAND xcrun stapler staple "${VST3_PATH}"
+                COMMENT "Signing and notarizing VST3 for macOS"
+        )
+    endif()
+endif()

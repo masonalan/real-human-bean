@@ -20,37 +20,16 @@ auto loadShader(Shader& shader) -> void {
 		return;
 	}
 
-	const auto vertexPath = shader.vertexPath.c_str();
-	const auto fragmentPath = shader.fragmentPath.c_str();
-
-	auto vCode = std::string{};
-	auto fCode = std::string{};
-	auto vFile = std::ifstream{};
-	auto fFile = std::ifstream{};
-
-	try {
-		vFile.open(vertexPath);
-		fFile.open(fragmentPath);
-
-		auto vStream = std::stringstream{};
-		auto fStream = std::stringstream{};
-
-		vStream << vFile.rdbuf();
-		fStream << fFile.rdbuf();
-
-		vCode = vStream.str();
-		fCode = fStream.str();
-	} catch (const std::ifstream::failure& e) {
-		std::cout << "Shader(): " << e.what() << std::endl;
-		throw e;
-	}
-
 	auto size = 0;
-	const auto buffer =
+	const auto vCodeCStr =
+		BinaryData::getNamedResource(shader.vertexPath.c_str(), size);
+	const auto fCodeCStr =
 		BinaryData::getNamedResource(shader.fragmentPath.c_str(), size);
 
-	const auto vCodeCStr = vCode.c_str();
-	const auto fCodeCStr = buffer;
+	if (vCodeCStr == nullptr || fCodeCStr == nullptr) {
+		std::cerr << "Failed to load vertex and fragment shader" << std::endl;
+		return;
+	}
 
 	auto success = int{};
 	auto&& log = (char[512]){};
@@ -130,26 +109,22 @@ auto setupGraphics(GraphicsContext& context) -> void {
 	};
 
 	checkError();
-	context.shader.vertexPath =
-		"/Users/jamespickering/tyos/real human bean/shader.vert";
+	context.shader.vertexPath = "shader_vert";
 	context.shader.fragmentPath = "shader_frag";
 	loadShader(context.shader);
 	checkError();
 
-	context.noiseShader.vertexPath =
-		"/Users/jamespickering/tyos/real human bean/shader.vert";
+	context.noiseShader.vertexPath = "shader_vert";
 	context.noiseShader.fragmentPath = "noiseshader_frag";
 	loadShader(context.noiseShader);
 	checkError();
 
-	context.graphShader.vertexPath =
-		"/Users/jamespickering/tyos/real human bean/shader.vert";
+	context.graphShader.vertexPath = "shader_vert";
 	context.graphShader.fragmentPath = "graphshader_frag";
 	loadShader(context.graphShader);
 	checkError();
 
-	context.circleShader.vertexPath =
-		"/Users/jamespickering/tyos/real human bean/shader.vert";
+	context.circleShader.vertexPath = "shader_vert";
 	context.circleShader.fragmentPath = "circleshader_frag";
 	loadShader(context.circleShader);
 	checkError();
