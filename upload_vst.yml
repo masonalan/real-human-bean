@@ -1,0 +1,41 @@
+name: Build and Upload VST Artifact
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build
+
+      - name: Set up JUCE build
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build project
+        run: |
+          cd build
+          ninja
+
+      - name: Find VSTs
+        id: find_vsts
+        run: |
+          VST_PATH=$(find build -type f -name "*.vst3" || true)
+          echo "Found VST: $VST_PATH"
+          echo "vst_path=$VST_PATH" >> $GITHUB_OUTPUT
+
+      - name: Upload VST Artifact
+        if: steps.find_vsts.outputs.vst_path != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-vst-plugin
+          path: ${{ steps.find_vsts.outputs.vst_path }}
