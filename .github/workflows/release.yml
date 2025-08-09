@@ -1,5 +1,8 @@
 name: Build and Sign VST3
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -8,7 +11,6 @@ on:
 jobs:
   macos-build-sign:
     runs-on: macos-latest
-    environment: stage
     steps:
       - uses: actions/checkout@v4
 
