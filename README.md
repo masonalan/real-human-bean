@@ -1,6 +1,6 @@
 # real human bean
 
-![example workflow](https://github.com/masonalan/real-human-bean/actions/workflows/release.yml/badge.svg)
+![example workflow](https://github.com/masonalan/real-human-bean/actions/workflows/release.yml/badge.svg?branch=)
 
 *real human bean* is an audio plugin that applies humanized offsets to a stream of samples, making the samples sound as
 if a person played them. It is ideal for channels that contain one drum part, such as a hi hat channel, snare channel,
