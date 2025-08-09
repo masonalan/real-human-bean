@@ -38,7 +38,7 @@ jobs:
       - name: Sign VST3
         run: |
           codesign --deep --force --options runtime \
-            --sign "Developer ID Application: James Pickering \(G34JXTX2UG\)" \
+            --sign "Developer ID Application: James Pickering (G34JXTX2UG)" \
             "build/real_human_bean_artefacts/Release/VST3/real human bean.vst3"
 
       - name: Notarize
