@@ -1,5 +1,7 @@
 ## real human bean
 
+![example workflow](https://github.com/masonalan/real-human-bean/actions/workflows/release.yml/badge.svg)
+
 An audio plugin that applies humanized offsets to a stream of samples. Ideal for using on programmed drums. I'm not
 responsible for any lost sessions due to crashes as this plugin is still in development, and admittedly it is my first
 plugin.
