@@ -2,15 +2,30 @@
 
 ![example workflow](https://github.com/masonalan/real-human-bean/actions/workflows/release.yml/badge.svg)
 
-An audio plugin that applies humanized offsets to a stream of samples. Ideal for using on programmed drums. I'm not
-responsible for any lost sessions due to crashes as this plugin is still in development, and admittedly it is my first
-plugin.
+*real human bean* is an audio plugin that applies humanized offsets to a stream of samples, making the samples sound as
+if a person played them. It is ideal for channels that contain one drum part, such as a hi hat channel, snare channel,
+etc.
 
-You can download the VST3 from the releases page or build it yourself if you want an AU or something else.
+The math behind why these offsets mimic human drum playing is described in this
+paper: https://researchportal.helsinki.fi/en/persons/saara-loviisa-malila.
 
-If you have any bugs or issues please report them! Thanks :)
+![screenshot 1](assets/ss1.png)
 
-If you want it on Windows you can pay for the certificate lmao I've already been extorted by one tech giant today for
-a "developer account".
+## Installation
 
-The plugin is based off of this super cool paper: https://researchportal.helsinki.fi/en/persons/saara-loviisa-malila
+*If you want an AU or the standalone version, just ask me.*
+
+1. Go to releases and download the latest VST3.
+2. Move the VST3 to `/Library/Audio/Plug-Ins/VST3`.
+3. Restart your DAW and scan for new plugins.
+4. That's it!
+
+## Contributions
+
+If you have any bugs, issues, or ideas, feel free to report them on here. This is my first plugin, so I am open to
+hearing about what I can do better code and/or design wise.
+
+## License
+
+MIT? Idk lmao.
+
