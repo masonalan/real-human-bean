@@ -2,8 +2,6 @@ name: Build and Sign VST3
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
 
