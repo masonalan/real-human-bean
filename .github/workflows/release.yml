@@ -12,8 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install CMake
-        run: brew install cmake
+      - name: Install CMake & vcpkg
+        run: |
+          brew install cmake
+          brew install vcpkg
+          git clone https://github.com/microsoft/vcpkg "vcpkg_dir"
+          export VCPKG_ROOT="vckpg_dir"
+
+      - name: Install vcpkg dependencies
+        run: vcpkg install
 
       - name: Decode and install certificate
         run: |
