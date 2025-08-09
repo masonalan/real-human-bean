@@ -6,14 +6,15 @@
 if a person played them. It is ideal for channels that contain one drum part, such as a hi hat channel, snare channel,
 etc.
 
-The math behind why these offsets mimic human drum playing is described in this
-paper: https://researchportal.helsinki.fi/en/persons/saara-loviisa-malila.
+The math behind why these offsets mimic human drum playing is described in [this
+paper](https://researchportal.helsinki.fi/en/persons/saara-loviisa-malila) by Saara Malila.
 
 ![screenshot 1](assets/ss1.png)
 
 ## Installation
 
-*If you want an AU or the standalone version, just ask me.*
+*If you want an AU or the standalone version, just ask me. If you want support for Windows you can buy me a
+certificate.*
 
 1. Go to releases and download the latest VST3.
 2. Move the VST3 to `/Library/Audio/Plug-Ins/VST3`.
