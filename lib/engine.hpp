@@ -24,10 +24,10 @@ struct FractalNoiseResult {
 };
 
 struct State {
-	std::atomic<float> alpha;
-	std::atomic<float> steps;
-	std::atomic<float> variance;
-	std::atomic<float> lookahead;
+	std::atomic<float> alpha = 0.5f;
+	std::atomic<float> steps = 0.5f;
+	std::atomic<float> variance = 0.5f;
+	std::atomic<float> lookahead = 0.0f;
 
 	std::array<int, 2> delayIdx = {0, 0};
 	std::array<int, 2> gateIdx{};

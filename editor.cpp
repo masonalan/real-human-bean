@@ -15,15 +15,20 @@ using namespace ::juce::gl;
 
 Editor::Editor(Processor& processor)
 	: AudioProcessorEditor{&processor}, _processor{processor} {
+	std::cout << "[*] Initializing editor..." << std::endl;
+
 	openGLComponent = new OpenGLComponent{processor.ctx};
 	openGLComponent->setOpaque(false);
 
 	addAndMakeVisible(openGLComponent);
 	setSize(config::WindowSize.x, config::WindowSize.y);
+
+	std::cout << "[*] Initialized editor" << std::endl;
 }
 
 Editor::~Editor() {
 	delete openGLComponent;
+	std::cout << "[*] Destroyed editor" << std::endl;
 };
 
 auto Editor::paint(juce::Graphics& g) -> void {
@@ -36,19 +41,26 @@ auto Editor::paint(juce::Graphics& g) -> void {
 }
 
 auto Editor::resized() -> void {
+	std::cout << "[*] Editor resizing..." << std::endl;
 	openGLComponent->setBounds(getLocalBounds());
+	std::cout << "[*] Editor resized" << std::endl;
 }
 
 OpenGLComponent::OpenGLComponent(State& state) : state{state} {
+	std::cout << "[*] OpenGL component initializing..." << std::endl;
 	setSize(config::WindowSize.x, config::WindowSize.y);
 	openGLContext.setOpenGLVersionRequired(juce::OpenGLContext::openGL4_1);
+	std::cout << "[*] OpenGL component initialized" << std::endl;
 }
 
 OpenGLComponent::~OpenGLComponent() {
+	std::cout << "[*] Destroying OpenGL component..." << std::endl;
 	shutdownOpenGL();
+	std::cout << "[*] Destroyed OpenGL component" << std::endl;
 }
 
 auto OpenGLComponent::initialise() -> void {
+	std::cout << "[*] Initializing OpenGL context..." << std::endl;
 	setupGraphics(graphics);
 	setupUi(ui);
 
@@ -56,17 +68,22 @@ auto OpenGLComponent::initialise() -> void {
 	knobInitWithValue(ui.knobSteps, state.steps.load());
 	knobInitWithValue(ui.knobVariance, state.variance.load());
 	knobInitWithValue(ui.knobLookahead, state.lookahead.load());
+
+	std::cout << "[*] Initialized OpenGL context" << std::endl;
 }
 
 auto OpenGLComponent::shutdown() -> void {}
 
 auto OpenGLComponent::render() -> void {
+	std::cout << "[*] Rendering..." << std::endl;
 	ui.windowSize = {getWidth(), getHeight()};
 
 	const auto mousePosRel = getMouseXYRelative();
 	ui.mouse.pos = glm::vec2{mousePosRel.x, mousePosRel.y} -
 				   glm::vec2{config::WindowSize.x, config::WindowSize.y} / 2.f;
 	ui.mouse.pos.y = -ui.mouse.pos.y;
+
+	std::cout << "[*] Gotten mouse position" << std::endl;
 
 	ui.mouse.events = 0;
 	if (const auto isPressed = isMouseButtonDown();
@@ -79,6 +96,12 @@ auto OpenGLComponent::render() -> void {
 		ui.mouse.events |= EventMouseReleased;
 	}
 
+	std::cout << "[*] Updated events" << std::endl;
+
 	updateUi(ui, state, graphics);
+
+	std::cout << "[*] Updated UI" << std::endl;
 	renderUi(ui, state, graphics);
+
+	std::cout << "[*] Done rendering" << std::endl;
 }

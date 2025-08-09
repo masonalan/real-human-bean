@@ -42,16 +42,24 @@ auto knobRender(const Knob& knob, const GraphicsContext& graphics) -> void {
 	quad.size *= 2.f;
 	auto model = quadToModel(quad);
 
+	std::cout << "[*] Starting to draw knob" << std::endl;
+
 	glUseProgram(graphics.circleShader.id);
 	setUniform(graphics.circleShader.id, "model", model);
 	setUniform(graphics.circleShader.id, "val", knob.value);
+
+	std::cout << "[*] Using circle shader" << std::endl;
 
 	glBindVertexArray(graphics.quadVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glUseProgram(graphics.shader.id);
 
+	std::cout << "[*] Back to regular shader" << std::endl;
+
 	model = knobApplyRotationToModel(quadToModel(knob.quad), knob.rotation);
+
+	std::cout << "[*] Drawing knob" << std::endl;
 
 	setUniform(graphics.shader.id, "model", model);
 	setUniform(graphics.shader.id, "hovered", knob.hovered);
@@ -61,6 +69,8 @@ auto knobRender(const Knob& knob, const GraphicsContext& graphics) -> void {
 	glBindTexture(GL_TEXTURE_2D, graphics.knobTexId);
 	glBindVertexArray(graphics.quadVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	std::cout << "[*] Doneeeeee" << std::endl;
 }
 
 auto knobInitWithValue(Knob& knob, const float value) -> void {

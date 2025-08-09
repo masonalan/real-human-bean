@@ -127,8 +127,6 @@ auto textureFromBuffer(const void* buffer,
 
 	stbi_image_free(data);
 
-	std::cout << "Loaded texture: " << "yayy" << std::endl;
-
 	return id;
 }
 

@@ -130,13 +130,15 @@ auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
 
 	buttonRender(ui.buttonReseed, graphics);
 
-	auto labelFig3Quad = ui.diagramOffset;
-	labelFig3Quad.pos.y = ui.cells.back().pos.y - 35.f;
-	setUniform(graphics.shader.id, "model", quadToModel(labelFig3Quad));
+	if (ui.cells.size() > 0) {
+		auto labelFig3Quad = ui.diagramOffset;
+		labelFig3Quad.pos.y = ui.cells.back().pos.y - 35.f;
+		setUniform(graphics.shader.id, "model", quadToModel(labelFig3Quad));
 
-	glBindTexture(GL_TEXTURE_2D, graphics.labelFig3Tex);
-	glBindVertexArray(graphics.quadVertexArray);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+		glBindTexture(GL_TEXTURE_2D, graphics.labelFig3Tex);
+		glBindVertexArray(graphics.quadVertexArray);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
 
 	setUniform(graphics.shader.id, "model", quadToModel(ui.labelKnobDesc));
 
