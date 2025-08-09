@@ -12,9 +12,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install CMake & vcpkg
+      - name: Install CMake
         run: |
           brew install cmake
+
+      - name: Install vcpkg + dependencies
+        run: |
           brew install vcpkg
           git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
           export VCPKG_ROOT="$HOME/vcpkg"
@@ -27,7 +30,7 @@ jobs:
 
       - name: Configure and build
         run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" --toolchain "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake" -D CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
           cmake --build build --config Release
 
       - name: Sign VST3
