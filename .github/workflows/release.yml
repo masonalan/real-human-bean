@@ -16,11 +16,9 @@ jobs:
         run: |
           brew install cmake
           brew install vcpkg
-          git clone https://github.com/microsoft/vcpkg "vcpkg_dir"
-          export VCPKG_ROOT="vckpg_dir"
-
-      - name: Install vcpkg dependencies
-        run: vcpkg install
+          git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
+          export VCPKG_ROOT="$HOME/vcpkg"
+          vcpkg install
 
       - name: Decode and install certificate
         run: |
