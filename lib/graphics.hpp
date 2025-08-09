@@ -34,6 +34,11 @@ struct GraphicsContext {
 	unsigned int normalTexId = 0;
 	unsigned int shiftTexId = 0;
 	unsigned int labelFig3Tex = 0;
+	unsigned int descAlpha = 0;
+	unsigned int descLookahead = 0;
+	unsigned int descSteps = 0;
+	unsigned int descVariance = 0;
+	unsigned int descNone = 0;
 
 	unsigned int reseedButtonTex;
 	unsigned int reseedButtonHoveredTex;

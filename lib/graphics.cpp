@@ -189,6 +189,11 @@ auto setupGraphics(GraphicsContext& context) -> void {
 		textureFromResource("btnplayhovered_png", opt);
 	context.reseedButtonPressedTex =
 		textureFromResource("btnplaypressed_png", opt);
+	context.descAlpha = textureFromResource("descalpha_png", opt);
+	context.descLookahead = textureFromResource("desclookahead_png", opt);
+	context.descNone = textureFromResource("descnone_png", opt);
+	context.descSteps = textureFromResource("descsteps_png", opt);
+	context.descVariance = textureFromResource("descvariance_png", opt);
 }
 
 auto setUniform(const unsigned int shaderId,

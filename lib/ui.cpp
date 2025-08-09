@@ -50,6 +50,7 @@ auto setupUi(Ui& ui) -> void {
 	ui.graphOffset = quadFromPsQuad({36, 447}, GraphSize);
 	ui.diagramOffset = quadFromPsQuad({1256.57, 454.76}, {188.04, 21.9});
 	ui.buttonReseed.quad = quadFromPsQuad({37, 655}, ReseedButtonSize);
+	ui.labelKnobDesc = quadFromPsQuad({336, 423}, {826, 62});
 }
 
 auto updateUi(Ui& ui, State& state, const GraphicsContext& graphics) -> void {
@@ -79,6 +80,18 @@ auto updateUi(Ui& ui, State& state, const GraphicsContext& graphics) -> void {
 	knobUpdate(ui.knobLookahead, ui.mouse);
 
 	buttonUpdate(ui.buttonReseed, ui.mouse);
+
+	if (ui.knobAlpha.hovered) {
+		ui.currDescTex = graphics.descAlpha;
+	} else if (ui.knobSteps.hovered) {
+		ui.currDescTex = graphics.descSteps;
+	} else if (ui.knobVariance.hovered) {
+		ui.currDescTex = graphics.descVariance;
+	} else if (ui.knobLookahead.hovered) {
+		ui.currDescTex = graphics.descLookahead;
+	} else {
+		ui.currDescTex = graphics.descNone;
+	}
 }
 
 auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
@@ -122,6 +135,12 @@ auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
 	setUniform(graphics.shader.id, "model", quadToModel(labelFig3Quad));
 
 	glBindTexture(GL_TEXTURE_2D, graphics.labelFig3Tex);
+	glBindVertexArray(graphics.quadVertexArray);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+
+	setUniform(graphics.shader.id, "model", quadToModel(ui.labelKnobDesc));
+
+	glBindTexture(GL_TEXTURE_2D, ui.currDescTex);
 	glBindVertexArray(graphics.quadVertexArray);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 

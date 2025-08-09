@@ -21,6 +21,11 @@ juce_add_binary_data(Resources
         resources/image/knob2.png
         resources/image/normal.png
         resources/image/shift.png
+        resources/image/desc-alpha.png
+        resources/image/desc-lookahead.png
+        resources/image/desc-none.png
+        resources/image/desc-steps.png
+        resources/image/desc-variance.png
         resources/shader/shader.vert
         resources/shader/shader.frag
         resources/shader/circle-shader.frag

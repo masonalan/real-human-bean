@@ -28,8 +28,11 @@ struct Ui {
 	Quad graphPowerSpectrum;
 	Quad graphOffset;
 	Quad diagramOffset;
+	Quad labelKnobDesc;
 	Button buttonReseed;
 	std::vector<Quad> cells;
+
+	unsigned int currDescTex = 0;
 };
 
 auto setupUi(Ui& ui) -> void;
