@@ -25,6 +25,11 @@ jobs:
           export VCPKG_ROOT="$HOME/vcpkg"
           vcpkg install
 
+      - name: Configure and build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" --toolchain "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake" -D CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+          cmake --build build --config Release
+
       - name: Decode and install certificate
         run: |
           security create-keychain -p slimegreenmachine build.keychain
@@ -33,14 +38,6 @@ jobs:
           echo "${{ secrets.MAC_CERT_P12 }}" | base64 --decode > cert.p12
           security import cert.p12 -k build.keychain -P "${{ secrets.MAC_CERT_PASSWORD }}" -T /usr/bin/codesign -A
           security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k slimegreenmachine build.keychain
-
-      - name: Configure and build
-        run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release -G "Unix Makefiles" --toolchain "$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake" -D CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
-          cmake --build build --config Release
-
-      - name: Sign VST3
-        run: |
           codesign --deep --force --options runtime \
             --sign "Developer ID Application: James Pickering (G34JXTX2UG)" \
             "build/real_human_bean_artefacts/Release/VST3/real human bean.vst3"

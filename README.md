@@ -1,4 +1,4 @@
-## real human bean
+# real human bean
 
 ![example workflow](https://github.com/masonalan/real-human-bean/actions/workflows/release.yml/badge.svg)
 
@@ -10,6 +10,7 @@ You can download the VST3 from the releases page or build it yourself if you wan
 
 If you have any bugs or issues please report them! Thanks :)
 
-If you want it on Windows you can pay for the certificate lmao I've already been extorted by one tech giant today for a "developer account".
+If you want it on Windows you can pay for the certificate lmao I've already been extorted by one tech giant today for
+a "developer account".
 
 The plugin is based off of this super cool paper: https://researchportal.helsinki.fi/en/persons/saara-loviisa-malila
