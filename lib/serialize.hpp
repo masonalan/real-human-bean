@@ -8,5 +8,5 @@
 
 struct State;
 
-auto serialize(juce::MemoryBlock& block, const State& context) -> void;
+auto serialize(juce::MemoryBlock& block, State& context) -> void;
 auto deserialize(const void* data, int sizeInBytes, State& context) -> void;

@@ -6,6 +6,7 @@
 #include "editor.hpp"
 
 #include "lib/engine.hpp"
+#include "lib/log.hpp"
 #include "lib/serialize.hpp"
 #include "lib/ui.hpp"
 
@@ -35,35 +36,27 @@ Processor::Processor()
 			 {paramFloat("alpha", 0.27f), paramFloat("steps", 0.4f),
 			  paramFloat("variance", 0.78f), paramFloat("lookahead", 0.5f)}},
 	  ctx{} {
-	static std::streambuf* originalCoutBuffer =
-		nullptr;  // To store the original buffer
-
-	if (originalCoutBuffer == nullptr) {		 // If not already redirected
-		originalCoutBuffer = std::cout.rdbuf();	 // Save the original streambuf
+#ifndef DEBUG
+	const auto logDir =
+		juce::File::getSpecialLocation(juce::File::userApplicationDataDirectory)
+			.getChildFile("tyOS")
+			.getChildFile("real human bean")
+			.getChildFile("Logs");
+	if (!logDir.exists()) {
+		if (!logDir.createDirectory()) {
+			std::cerr << "Failed to create log directory" << std::endl;
+		}
 	}
-
-	static std::ofstream outputFile;  // Use static to keep it alive
-	if (outputFile.is_open()) {
-		outputFile.close();	 // Close previous file if open
-	}
-	outputFile.open("/Users/jamespickering/Downloads/log.txt");
-
-	if (outputFile.is_open()) {
-		std::cout.rdbuf(outputFile.rdbuf());  // Redirect std::cout to the file
-	} else {
-		// Handle error if file cannot be opened
-		std::cerr << "Error: Could not open log file: "
-				  << "/Users/jamespickering/Downloads/log.txt" << std::endl;
-		std::cout.rdbuf(
-			originalCoutBuffer);  // Restore original cout if redirection failed
-	}
-
+	const auto currTimeStr =
+		juce::Time::getCurrentTime().toString(true, true).toStdString();
+	const auto logFilePath = logDir.getFullPathName().toStdString() +
+							 "/log - " + currTimeStr + ".txt";
+	writeStdOutToFile(logFilePath);
+#endif
 	std::cout << "[*] Initialized audio processor" << std::endl;
-	// ctx.alpha = params.getRawParameterValue("alpha");
 }
 
 Processor::~Processor() {
-	std::cout << "yunkkkk" << std::endl;
 	std::cout << "[*] Destroying audio processor" << std::endl;
 };
 

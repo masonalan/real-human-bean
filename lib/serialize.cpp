@@ -7,7 +7,7 @@
 
 #include <juce_core/juce_core.h>
 
-auto serialize(juce::MemoryBlock& block, const State& context) -> void {
+auto serialize(juce::MemoryBlock& block, State& context) -> void {
 	auto stream = juce::MemoryOutputStream{block, false};
 	stream.writeInt(Version);
 
@@ -18,6 +18,8 @@ auto serialize(juce::MemoryBlock& block, const State& context) -> void {
 		stream.writeFloat(context.steps.load());
 		stream.writeFloat(context.variance.load());
 		stream.writeFloat(context.lookahead.load());
+
+		applyState(context);
 	} else {
 		throw std::runtime_error{"serialize(): Unsupported version " + Version};
 	}

@@ -59,7 +59,8 @@ target_sources(real_human_bean
         lib/serialize.cpp
         lib/quad.cpp
         lib/widget/knob.cpp
-        lib/widget/button.cpp)
+        lib/widget/button.cpp
+        lib/log.cpp)
 
 
 target_compile_definitions(real_human_bean
@@ -88,4 +89,8 @@ target_link_libraries(real_human_bean PRIVATE
         Resources)
 target_link_libraries(real_human_bean PRIVATE glm::glm)
 target_include_directories(real_human_bean PRIVATE ${Stb_INCLUDE_DIR})
+
+if ("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    add_compile_definitions(DEBUG)
+endif ()
 

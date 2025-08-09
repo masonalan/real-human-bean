@@ -10,6 +10,8 @@ add_executable(real_human_bean_test main.cpp
         ../lib/mouse.hpp
         ../lib/event.hpp
         ../lib/config.hpp
+        ../lib/log.cpp
+        ../lib/log.hpp
 )
 
 target_link_libraries(real_human_bean_test PRIVATE glm::glm)

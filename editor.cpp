@@ -75,16 +75,12 @@ auto OpenGLComponent::initialise() -> void {
 auto OpenGLComponent::shutdown() -> void {}
 
 auto OpenGLComponent::render() -> void {
-	std::cout << "[*] Rendering..." << std::endl;
 	ui.windowSize = {getWidth(), getHeight()};
 
 	const auto mousePosRel = getMouseXYRelative();
 	ui.mouse.pos = glm::vec2{mousePosRel.x, mousePosRel.y} -
 				   glm::vec2{config::WindowSize.x, config::WindowSize.y} / 2.f;
 	ui.mouse.pos.y = -ui.mouse.pos.y;
-
-	std::cout << "[*] Gotten mouse position" << std::endl;
-
 	ui.mouse.events = 0;
 	if (const auto isPressed = isMouseButtonDown();
 		isPressed && !ui.mouse.isPressed) {
@@ -96,12 +92,6 @@ auto OpenGLComponent::render() -> void {
 		ui.mouse.events |= EventMouseReleased;
 	}
 
-	std::cout << "[*] Updated events" << std::endl;
-
 	updateUi(ui, state, graphics);
-
-	std::cout << "[*] Updated UI" << std::endl;
 	renderUi(ui, state, graphics);
-
-	std::cout << "[*] Done rendering" << std::endl;
 }
