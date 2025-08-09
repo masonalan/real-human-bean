@@ -55,9 +55,12 @@ jobs:
       - name: Staple ticket
         run: xcrun stapler staple "real human bean.vst3"
 
+      - name: Re-zip for release
+        run: ditto -c -k --keepParent "real human bean.vst3" real-human-bean-release.zip
+
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: "real human bean.vst3"
+          files: real-human-bean-release.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
