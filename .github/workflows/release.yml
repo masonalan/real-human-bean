@@ -44,18 +44,22 @@ jobs:
 
       - name: Notarize
         run: |
-          xcrun notarytool submit "build/real_human_bean_artefacts/Release/VST3/real human bean.vst3" \
+          ditto -c -k --keepParent \
+            "build/real_human_bean_artefacts/Release/VST3/real human bean.vst3" \
+            "real-human-bean.zip"
+          xcrun notarytool submit "real-human-bean.zip" \
             --apple-id "${{ secrets.MAC_APPLE_ID }}" \
             --team-id "${{ secrets.MAC_TEAM_ID }}" \
             --password "${{ secrets.MAC_APP_PASSWORD }}" \
             --wait
+          unzip -o real-human-bean.zip -d .
 
       - name: Staple ticket
-        run: xcrun stapler staple "build/real_human_bean_artefacts/Release/VST3/real human bean.vst3"
+        run: xcrun stapler staple "real human bean.vst3"
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: "build/real_human_bean_artefacts/Release/VST3/real human bean.vst3"
+          files: "real human bean.vst3"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

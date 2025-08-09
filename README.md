@@ -7,7 +7,7 @@ if a person played them. It is ideal for channels that contain one drum part, su
 etc.
 
 The math behind why these offsets mimic human drum playing is described in [this
-paper](https://researchportal.helsinki.fi/en/persons/saara-loviisa-malila) by Saara Malila.
+paper](https://helda.helsinki.fi/server/api/core/bitstreams/14c64deb-b17c-41e1-a50e-cad74fa66c75/content) by Saara Malila.
 
 ![screenshot 1](assets/ss1.png)
 
@@ -28,5 +28,5 @@ hearing about what I can do better code and/or design wise.
 
 ## License
 
-MIT? Idk lmao.
+MIT. © Copyright 2025 tyOS.
 
