@@ -148,7 +148,7 @@ auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, graphics.notesFbo);
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-	glViewport(0, 0, ui.windowSize.x * 2, ui.windowSize.y * 2);
+	glViewport(0, 0, ui.windowSize.x, ui.windowSize.y);
 
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -177,7 +177,7 @@ auto renderUi(Ui& ui, const State& state, const GraphicsContext& graphics)
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glBlendFunc(GL_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glViewport(0, 0, ui.windowSize.x * 2, ui.windowSize.y * 2);
+	glViewport(0, 0, ui.windowSize.x, ui.windowSize.y);
 
 	auto quadDiagram = Quad{};
 	quadDiagram.pos = {0, 0};

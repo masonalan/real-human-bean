@@ -75,7 +75,18 @@ auto OpenGLComponent::initialise() -> void {
 auto OpenGLComponent::shutdown() -> void {}
 
 auto OpenGLComponent::render() -> void {
-	ui.windowSize = {getWidth(), getHeight()};
+	GLint viewport[4];
+	glGetIntegeri_v(GL_VIEWPORT, 0, viewport);
+
+	if (ui.windowSize.x != viewport[2] || ui.windowSize.y != viewport[3]) {
+		ui.windowSize.x = viewport[2];
+		ui.windowSize.y = viewport[3];
+
+		glBindTexture(GL_TEXTURE_2D, graphics.notesTex);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ui.windowSize.x,
+					 ui.windowSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 
 	const auto mousePosRel = getMouseXYRelative();
 	ui.mouse.pos = glm::vec2{mousePosRel.x, mousePosRel.y} -
